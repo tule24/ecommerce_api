@@ -16,7 +16,9 @@
     "jsonwebtoken": "^9.0.0",
     "mongoose": "^6.10.0",
     "morgan": "^1.10.0",
-    "slugify": "^1.6.5"
+    "nodemailer": "^6.9.1",
+    "slugify": "^1.6.5",
+    "validator": "^13.9.0"
   },
   "devDependencies": {
     "nodemon": "^2.0.20"

@@ -1,14 +1,13 @@
 const { StatusCodes } = require('http-status-codes')
-const slugify = require('slugify')
 const { BadRequestError, NotFoundError } = require('../errors')
 const { catchAsync } = require('../helpers')
 const Category = require('../models/Category')
 const { APIFeatures } = require('../helpers')
 
 const createCategory = catchAsync(async (req, res, next) => {
-    const { name } = req.body
-    if (!name) {
-        throw new BadRequestError('Please provide category name')
+    const { name, description } = req.body
+    if (!name || !description) {
+        throw new BadRequestError('Please provide category name & description')
     }
 
     const category = await Category.findOne({ name })
@@ -25,16 +24,21 @@ const createCategory = catchAsync(async (req, res, next) => {
 
 const updateCategory = catchAsync(async (req, res, next) => {
     const { id } = req.params
-    const { name } = req.body
+    const { name, description } = req.body
 
-    if (!name) {
-        throw new BadRequestError('Please provide category name')
+    if (!name || !description) {
+        throw new BadRequestError('Please provide category name & description')
     } else {
-        const newCategory = await Category.findByIdAndUpdate(id, { name, slug: slugify(name) }, { new: true, runValidators: true })
-        if (!newCategory) {
-            throw new NotFoundError(`Not found category with id ${id}`)
+        const category = await Category.findOne({ name })
+        if (category) {
+            throw new BadRequestError('Category name already exists')
         } else {
-            sendCategoryInfo(res, newCategory)
+            const newCategory = await Category.findByIdAndUpdate(id, req.body, { new: true, runValidators: true })
+            if (!newCategory) {
+                throw new NotFoundError(`Not found category with id ${id}`)
+            } else {
+                sendCategoryInfo(res, newCategory)
+            }
         }
     }
 })

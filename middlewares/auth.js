@@ -1,7 +1,7 @@
 const jwt = require('jsonwebtoken')
-const { UnauthorizedError } = require('../errors')
+const { UnauthorizedError, IsAllowedError } = require('../errors')
 const User = require('../models/User')
-const { catchAsync } = require('../helpers')
+const { catchAsync, checkPasswordChange } = require('../helpers')
 
 const authMiddleware = catchAsync(async (req, res, next) => {
     const authHeader = req.headers.authorization
@@ -17,17 +17,21 @@ const authMiddleware = catchAsync(async (req, res, next) => {
         throw new UnauthorizedError('User belonging to this token no longer exist')
     }
 
+    if (checkPasswordChange(curUser.passwordChangedAt, decoded.iat)) {
+        throw new UnauthorizedError('User recent changed the password. Please log in again with new password')
+    }
+
     req.user = curUser
     next()
 })
 
-const isAdmin = catchAsync(async (req, res, next) => {
-    const user = req.user
-    if (user.role !== 'admin') {
-        throw new UnauthorizedError('Only admin can access this route')
-    } else {
+const isAllowedMiddleware = (...roles) => {
+    return catchAsync(async (req, res, next) => {
+        if (!roles.includes(req.user.role)) {
+            return next(new IsAllowedError("You have not permission to access this route"))
+        }
         next()
-    }
-})
+    })
+}
 
-module.exports = { authMiddleware, isAdmin }
+module.exports = { authMiddleware, isAllowedMiddleware }

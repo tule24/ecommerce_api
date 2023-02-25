@@ -6,9 +6,9 @@ const categorySchema = Schema({
         required: true,
         unique: true
     },
-    slug: {
+    description: {
         type: String,
-        lowercase: true,
+        required: true
     }
 })
 

@@ -1,5 +1,4 @@
 const { StatusCodes } = require('http-status-codes')
-const slugify = require('slugify')
 const fs = require('fs')
 const { BadRequestError, NotFoundError } = require('../errors')
 const { catchAsync } = require('../helpers')
@@ -17,7 +16,7 @@ const createProduct = catchAsync(async (req, res, next) => {
         throw new BadRequestError('Photo size should be less then 1mb')
     }
 
-    const product = new Product({ ...req.fields, slug: slugify(name) })
+    const product = new Product(req.fields)
     product.photo.data = fs.readFileSync(photo.path)
     product.photo.contentType = photo.type
     await product.save()
@@ -30,12 +29,11 @@ const createProduct = catchAsync(async (req, res, next) => {
 
 const updateProduct = catchAsync(async (req, res, next) => {
     const { id } = req.params
-    const { name, description, price, category, quantity } = req.fields
     const { photo } = req.files
     if (photo && photo.size > 1000000) {
         throw new BadRequestError('Photo size should be less then 1mb')
     }
-    const newProduct = await Product.findByIdAndUpdate(id, { ...req.fields, slug: slugify(name) }, { new: true, runValidators: true })
+    const newProduct = await Product.findByIdAndUpdate(id, req.fields, { new: true, runValidators: true })
 
     if (!newProduct) {
         throw new NotFoundError(`Not found product with id ${id}`)
