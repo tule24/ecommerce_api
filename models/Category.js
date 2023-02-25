@@ -1,6 +1,6 @@
 const { Schema, model } = require('mongoose')
 
-const categorySchema = Schema({
+const categorySchema = new Schema({
     name: {
         type: String,
         required: true,
@@ -10,6 +10,6 @@ const categorySchema = Schema({
         type: String,
         required: true
     }
-})
+}, { timestamps: true })
 
 module.exports = model('categories', categorySchema)

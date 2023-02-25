@@ -7,7 +7,7 @@ const connectDB = require('../db/connect')
 const { errorHandleMiddleware, notFoundMiddleware, authMiddleware } = require('../middlewares')
 const authRouter = require('../routes/auth')
 const userRouter = require('../routes/user')
-// const categoryRouter = require('../routes/category')
+const categoryRouter = require('../routes/category')
 // const productRouter = require('../routes/product')
 // const orderRouter = require('../routes/order')
 
@@ -20,7 +20,7 @@ app.use(express.static(publicPathDirectory))
 
 app.use('/api/v1/auth', authRouter)
 app.use('/api/v1/user', authMiddleware, userRouter)
-// app.use('/api/v1/category', authMiddleware, categoryRouter)
+app.use('/api/v1/category', authMiddleware, categoryRouter)
 // app.use('/api/v1/product', authMiddleware, productRouter)
 // app.use('/api/v1/order', authMiddleware, orderRouter)
 

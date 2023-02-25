@@ -14,7 +14,7 @@ const createCategory = catchAsync(async (req, res, next) => {
     if (category) {
         throw new BadRequestError('Category already exists')
     } else {
-        const newCategory = await Category.create({ name, slug: slugify(name) })
+        const newCategory = await Category.create(req.body)
         res.status(StatusCodes.CREATED).json({
             success: true,
             newCategory
@@ -24,21 +24,17 @@ const createCategory = catchAsync(async (req, res, next) => {
 
 const updateCategory = catchAsync(async (req, res, next) => {
     const { id } = req.params
-    const { name, description } = req.body
+    const { name } = req.body
 
-    if (!name || !description) {
-        throw new BadRequestError('Please provide category name & description')
+    const category = await Category.findOne({ name })
+    if (category) {
+        throw new BadRequestError('Category already exists')
     } else {
-        const category = await Category.findOne({ name })
-        if (category) {
-            throw new BadRequestError('Category name already exists')
+        const newCategory = await Category.findByIdAndUpdate(id, req.body, { new: true, runValidators: true })
+        if (!newCategory) {
+            throw new NotFoundError(`Not found category with id ${id}`)
         } else {
-            const newCategory = await Category.findByIdAndUpdate(id, req.body, { new: true, runValidators: true })
-            if (!newCategory) {
-                throw new NotFoundError(`Not found category with id ${id}`)
-            } else {
-                sendCategoryInfo(res, newCategory)
-            }
+            sendCategoryInfo(res, newCategory)
         }
     }
 })
@@ -81,7 +77,7 @@ const deleteCategory = catchAsync(async (req, res, next) => {
 const sendCategoryInfo = (res, category) => {
     res.status(StatusCodes.OK).json({
         success: true,
-        data: category
+        category
     })
 }
 module.exports = { createCategory, updateCategory, getAllCategory, getCategory, deleteCategory }
