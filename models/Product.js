@@ -18,7 +18,7 @@ const productSchema = new Schema({
         ref: 'categories',
         required: true
     },
-    quantity: {
+    stock: {
         type: Number,
         required: true
     },
@@ -26,8 +26,10 @@ const productSchema = new Schema({
         data: Buffer,
         contentType: String
     },
-    shipping: {
-        type: Boolean
+    vendor: {
+        type: Schema.Types.ObjectId,
+        ref: 'users',
+        required: true
     }
 }, { timestamps: true })
 

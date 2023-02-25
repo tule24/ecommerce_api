@@ -25,7 +25,7 @@ const authMiddleware = catchAsync(async (req, res, next) => {
     next()
 })
 
-const isAllowedMiddleware = (...roles) => {
+const isAllowedMiddleware = (roles) => {
     return catchAsync(async (req, res, next) => {
         if (!roles.includes(req.user.role)) {
             return next(new IsAllowedError("You have not permission to access this route"))
