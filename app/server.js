@@ -8,7 +8,7 @@ const authRouter = require('../routes/auth')
 const userRouter = require('../routes/user')
 const categoryRouter = require('../routes/category')
 const productRouter = require('../routes/product')
-// const orderRouter = require('../routes/order')
+const orderRouter = require('../routes/order')
 
 const app = express()
 app.use(express.json())
@@ -21,7 +21,7 @@ app.use('/api/v1/auth', authRouter)
 app.use('/api/v1/user', authMiddleware, userRouter)
 app.use('/api/v1/category', authMiddleware, categoryRouter)
 app.use('/api/v1/product', authMiddleware, productRouter)
-// app.use('/api/v1/order', authMiddleware, orderRouter)
+app.use('/api/v1/order', authMiddleware, orderRouter)
 
 
 app.use(notFoundMiddleware)

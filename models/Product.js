@@ -30,7 +30,14 @@ const productSchema = new Schema({
         type: Schema.Types.ObjectId,
         ref: 'users',
         required: true
-    }
+    },
+    orders: [{
+        order: {
+            type: Schema.Types.ObjectId,
+            ref: 'orders'
+        },
+        amount: Number
+    }]
 }, { timestamps: true })
 
 module.exports = model('products', productSchema)
