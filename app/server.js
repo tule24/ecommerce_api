@@ -2,6 +2,7 @@ require('dotenv').config()
 const express = require('express')
 const path = require('path')
 const morgan = require('morgan')
+const cors = require('cors')
 const connectDB = require('../db/connect')
 const { errorHandleMiddleware, notFoundMiddleware, authMiddleware } = require('../middlewares')
 const authRouter = require('../routes/auth')
@@ -12,6 +13,7 @@ const orderRouter = require('../routes/order')
 
 const app = express()
 app.use(express.json())
+app.use(cors())
 // app.use(morgan("dev"))
 
 const publicPathDirectory = path.join(__dirname, '../public')
@@ -39,8 +41,8 @@ const start = async () => {
     }
 }
 
-// start()
+start()
 
-module.exports = app.listen(port, () => {
-    console.log(`Server is listening on port ${port}`)
-})
+// module.exports = app.listen(port, () => {
+//     console.log(`Server is listening on port ${port}`)
+// })
