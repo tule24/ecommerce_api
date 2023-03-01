@@ -30,11 +30,12 @@ app.use(notFoundMiddleware)
 app.use(errorHandleMiddleware)
 
 const port = process.env.PORT || 3000
-const start = async () => {
+const start = () => {
     try {
-        await connectDB(process.env.MONGO_URI)
-        app.listen(port, () => {
-            console.log(`Server is listening on port ${port}`)
+        connectDB(process.env.MONGO_URI).then(() => {
+            app.listen(port, () => {
+                console.log(`Server is listening on port ${port}`)
+            })
         })
     } catch (error) {
         console.log(error)
