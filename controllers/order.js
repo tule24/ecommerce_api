@@ -8,7 +8,7 @@ const Product = require('../models/Product')
 const createOrder = catchAsync(async (req, res, next) => {
     const { products, total } = req.body
     if (products.length === 0 || !total) {
-        throw new BadRequestError("Please prodide products, total & buyer")
+        throw new BadRequestError("Please prodide products & total")
     }
 
     const newProducts = []
@@ -19,7 +19,7 @@ const createOrder = catchAsync(async (req, res, next) => {
         } else {
             const newStock = product.stock - products[i].quantity
             if (newStock < 0) {
-                throw new BadRequestError(`Product with id ${products[i].product} not exist`)
+                throw new BadRequestError(`Product with id ${products[i].product} out of stock`)
             } else {
                 product.stock = newStock
                 product.amount = products[i].quantity

@@ -11,7 +11,7 @@ const createProduct = catchAsync(async (req, res, next) => {
     const { _id } = req.user
 
     if (!name || !description || !price || !category || !stock || !photo) {
-        throw new BadRequestError('Please provide name, description, price, category, stock, vendor & photo')
+        throw new BadRequestError('Please provide name, description, price, category, stock & photo')
     }
     if (photo.size > 1000000) {
         throw new BadRequestError('Photo size should be less then 1mb')

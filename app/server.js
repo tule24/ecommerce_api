@@ -12,7 +12,7 @@ const orderRouter = require('../routes/order')
 
 const app = express()
 app.use(express.json())
-app.use(morgan("dev"))
+// app.use(morgan("dev"))
 
 const publicPathDirectory = path.join(__dirname, '../public')
 app.use(express.static(publicPathDirectory))
@@ -39,4 +39,8 @@ const start = async () => {
     }
 }
 
-start()
+// start()
+
+module.exports = app.listen(port, () => {
+    console.log(`Server is listening on port ${port}`)
+})

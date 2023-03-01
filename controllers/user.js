@@ -9,6 +9,11 @@ const updateUser = catchAsync(async (req, res, next) => {
         throw new BadRequestError("This route is not used to update the password")
     }
 
+    const { id } = req.params
+    if (id != req.user._id) {
+        throw new UnauthorizedError('Only update the account that you own')
+    }
+
     const { email } = req.body
     if (email) {
         const user = await User.findOne({ email })
@@ -16,8 +21,6 @@ const updateUser = catchAsync(async (req, res, next) => {
             throw new BadRequestError('Email already exists')
         }
     }
-
-    const { id } = req.params
     const user = await User.findByIdAndUpdate(id, req.body, { new: true, runValidators: true })
     sendUserInfo(res, user)
 })

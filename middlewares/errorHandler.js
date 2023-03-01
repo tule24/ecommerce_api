@@ -11,7 +11,7 @@ const errorHandlerMiddleware = (err, req, res, next) => {
         return res.status(err.statusCode).json({ msg: err.message })
     }
 
-    if (err.name = 'ValidationError') {
+    if (err.name == 'ValidationError') {
         customError.statusCode = StatusCodes.BAD_REQUEST
         customError.msg = Object.values(err.errors).map(item => item.message).join('')
     }
@@ -20,12 +20,10 @@ const errorHandlerMiddleware = (err, req, res, next) => {
         customError.statusCode = StatusCodes.BAD_REQUEST
         customError.msg = `Duplicate value entered for ${Object.keys(err.keyValue)} field, please choose another value`
     }
-
-    // if (err.name = "CastError") {
-    //     customError.statusCode = StatusCodes.BAD_REQUEST
-    //     customError.msg = err.message
-    // }
-
+    if (err.name = "CastError") {
+        customError.statusCode = StatusCodes.BAD_REQUEST
+        customError.msg = err.message
+    }
     res.status(customError.statusCode).json({ msg: customError.msg })
 }
 
