@@ -19,11 +19,11 @@ app.use(cors())
 const publicPathDirectory = path.join(__dirname, '../public')
 app.use(express.static(publicPathDirectory))
 
-app.use('/auth', authRouter)
-app.use('/user', authMiddleware, userRouter)
-app.use('/category', authMiddleware, categoryRouter)
-app.use('/product', authMiddleware, productRouter)
-app.use('/order', authMiddleware, orderRouter)
+app.use('/api/v1/auth', authRouter)
+app.use('/api/v1/user', authMiddleware, userRouter)
+app.use('/api/v1/category', authMiddleware, categoryRouter)
+app.use('/api/v1/product', authMiddleware, productRouter)
+app.use('/api/v1/order', authMiddleware, orderRouter)
 
 
 app.use(notFoundMiddleware)
