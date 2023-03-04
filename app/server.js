@@ -19,23 +19,22 @@ app.use(cors())
 const publicPathDirectory = path.join(__dirname, '../public')
 app.use(express.static(publicPathDirectory))
 
-app.use('/api/v1/auth', authRouter)
-app.use('/api/v1/user', authMiddleware, userRouter)
-app.use('/api/v1/category', authMiddleware, categoryRouter)
-app.use('/api/v1/product', authMiddleware, productRouter)
-app.use('/api/v1/order', authMiddleware, orderRouter)
+app.use('/auth', authRouter)
+app.use('/user', authMiddleware, userRouter)
+app.use('/category', authMiddleware, categoryRouter)
+app.use('/product', authMiddleware, productRouter)
+app.use('/order', authMiddleware, orderRouter)
 
 
 app.use(notFoundMiddleware)
 app.use(errorHandleMiddleware)
 
 const port = process.env.PORT || 3000
-const start = () => {
+const start = async () => {
     try {
-        connectDB(process.env.MONGO_URI).then(() => {
-            app.listen(port, () => {
-                console.log(`Server is listening on port ${port}`)
-            })
+        await connectDB(process.env.MONGO_URI)
+        app.listen(port, () => {
+            console.log(`Server is listening on port ${port}`)
         })
     } catch (error) {
         console.log(error)

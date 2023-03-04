@@ -13,7 +13,7 @@ describe('Ecommerce API', async () => {
 
     console.log('AUTH ROUTE')
     // Test register route
-    describe("POST /api/v1/register", function () {
+    describe("POST /register", function () {
         it("Should error 400 if name, email, password, phone or address not provide", async () => {
             const user = {
                 email: "vendor2@example.com",
@@ -21,7 +21,7 @@ describe('Ecommerce API', async () => {
                 phone: "0123456789",
                 address: "HoChiMinh"
             }
-            const res = await chai.request(server).post("/api/v1/auth/register").send(user)
+            const res = await chai.request(server).post("/auth/register").send(user)
 
             expect(res.status).to.equal(400)
             expect(res.body).to.a('object')
@@ -35,7 +35,7 @@ describe('Ecommerce API', async () => {
                 phone: "0123456789",
                 address: "HoChiMinh"
             }
-            const res = await chai.request(server).post("/api/v1/auth/register").send(user)
+            const res = await chai.request(server).post("/auth/register").send(user)
 
             expect(res.status).to.equal(400)
             expect(res.body).to.a('object')
@@ -43,12 +43,12 @@ describe('Ecommerce API', async () => {
         })
     })
     // Test login route
-    describe("POST /api/v1/login", function () {
+    describe("POST /login", function () {
         it("Should error 400 if email, password not provide", async () => {
             const user = {
                 email: "vendor2@example.com"
             }
-            const res = await chai.request(server).post("/api/v1/auth/login").send(user)
+            const res = await chai.request(server).post("/auth/login").send(user)
 
             expect(res.status).to.equal(400)
             expect(res.body).to.a('object')
@@ -59,7 +59,7 @@ describe('Ecommerce API', async () => {
                 email: "asdsada@example.com",
                 password: "123456"
             }
-            const res = await chai.request(server).post("/api/v1/auth/login").send(user)
+            const res = await chai.request(server).post("/auth/login").send(user)
 
             expect(res.status).to.equal(404)
             expect(res.body).to.a('object')
@@ -70,7 +70,7 @@ describe('Ecommerce API', async () => {
                 email: "vendor2@example.com",
                 password: "aaaaaa"
             }
-            const res = await chai.request(server).post("/api/v1/auth/login").send(user)
+            const res = await chai.request(server).post("/auth/login").send(user)
 
             expect(res.status).to.equal(401)
             expect(res.body).to.a('object')
@@ -78,12 +78,12 @@ describe('Ecommerce API', async () => {
         })
     })
     // Test forgotPassword route
-    describe("POST /api/v1/forgotPassword", function () {
+    describe("POST /forgotPassword", function () {
         it("Should error 400 if email not provide", async () => {
             const user = {
                 email: "vendor2qqq@example.com"
             }
-            const res = await chai.request(server).post("/api/v1/auth/forgotPassword").send(user)
+            const res = await chai.request(server).post("/auth/forgotPassword").send(user)
 
             expect(res.status).to.equal(404)
             expect(res.body).to.a('object')
@@ -91,13 +91,13 @@ describe('Ecommerce API', async () => {
         })
     })
     // Test changePassword route
-    describe("POST /api/v1/changePassword", function () {
+    describe("POST /changePassword", function () {
         it("Should error 401 if req not attach header authorization", async () => {
             const user = {
                 curPassword: "123456",
                 newPassword: "654231"
             }
-            const res = await chai.request(server).patch("/api/v1/auth/changePassword").send(user)
+            const res = await chai.request(server).patch("/auth/changePassword").send(user)
 
             expect(res.status).to.equal(401)
             expect(res.body).to.a('object')
@@ -109,7 +109,7 @@ describe('Ecommerce API', async () => {
             }
             const accessToken = "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VySWQiOiI2M2ZhNTRjM2QwYjUzOTI3ZTRjODRhN2UiLCJpYXQiOjE2Nzc2ODAzMzcsImV4cCI6MTY4MDI3MjMzN30.03hQuqvsH8dEo-jv16YNvXXw70jAiYNWnu9JzhlkclE"
             const res = await chai.request(server)
-                .patch("/api/v1/auth/changePassword")
+                .patch("/auth/changePassword")
                 .auth(accessToken, { type: 'bearer' })
                 .send(user)
 
@@ -124,7 +124,7 @@ describe('Ecommerce API', async () => {
             }
             const accessToken = "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VySWQiOiI2M2ZhNTRjM2QwYjUzOTI3ZTRjODRhN2UiLCJpYXQiOjE2Nzc2ODAzMzcsImV4cCI6MTY4MDI3MjMzN30.03hQuqvsH8dEo-jv16YNvXXw70jAiYNWnu9JzhlkclE"
             const res = await chai.request(server)
-                .patch("/api/v1/auth/changePassword")
+                .patch("/auth/changePassword")
                 .auth(accessToken, { type: 'bearer' })
                 .send(user)
 
@@ -139,13 +139,46 @@ describe('Ecommerce API', async () => {
             }
             const accessToken = "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VySWQiOiI2M2ZhNTRjM2QwYjUzOTI3ZTRjODRhN2UiLCJpYXQiOjE2Nzc2ODAzMzcsImV4cCI6MTY4MDI3MjMzN30.03hQuqvsH8dEo-jv16YNvXXw70jAiYNWnu9JzhlkclE"
             const res = await chai.request(server)
-                .patch("/api/v1/auth/changePassword")
+                .patch("/auth/changePassword")
                 .auth(accessToken, { type: 'bearer' })
                 .send(user)
 
             expect(res.status).to.equal(200)
             expect(res.body).to.a('object')
             expect(res.body.message).to.equal('Change password success, please log in with new password')
+        })
+    })
+    // Test forgotPassword route
+    describe("POST /forgotPassword", function () {
+        it("Should error 400 if email not provide", async () => {
+            const user = {
+                email: "vendor2qqq@example.com"
+            }
+            const res = await chai.request(server).post("/auth/forgotPassword").send(user)
+
+            expect(res.status).to.equal(404)
+            expect(res.body).to.a('object')
+            expect(res.body.msg).to.equal('Not found user with this email')
+        })
+    })
+    // Test logout route
+    describe("POST /logout", function () {
+        it("Should error 401 if req not attach header authorization", async () => {
+            const res = await chai.request(server).patch("/auth/logout")
+
+            expect(res.status).to.equal(401)
+            expect(res.body).to.a('object')
+            expect(res.body.msg).to.equal('Authentication invalid')
+        })
+        it("Should logout success", async () => {
+            const accessToken = "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VySWQiOiI2M2ZhNTRjM2QwYjUzOTI3ZTRjODRhN2UiLCJpYXQiOjE2Nzc2ODAzMzcsImV4cCI6MTY4MDI3MjMzN30.03hQuqvsH8dEo-jv16YNvXXw70jAiYNWnu9JzhlkclE"
+            const res = await chai.request(server)
+                .patch("/auth/logout")
+                .auth(accessToken, { type: 'bearer' })
+
+            expect(res.status).to.equal(200)
+            expect(res.body).to.a('string')
+            expect(res.body).to.equal('Logout success')
         })
     })
 })

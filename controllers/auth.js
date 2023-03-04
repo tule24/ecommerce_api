@@ -1,7 +1,8 @@
 const { StatusCodes } = require('http-status-codes')
 const crypto = require('crypto')
+const jwt = require('jsonwebtoken')
 const { BadRequestError, UnauthorizedError, NotFoundError } = require('../errors')
-const { catchAsync, createJWT, checkPassword, createPasswordResetToken, sendEmail } = require('../helpers')
+const { catchAsync, createJWT, checkPassword, createPasswordResetToken, sendEmail, createRefreshJWT } = require('../helpers')
 const User = require('../models/User')
 
 const register = catchAsync(async (req, res, next) => {
@@ -43,7 +44,39 @@ const login = catchAsync(async (req, res, next) => {
         throw new UnauthorizedError('Pasword not match. Please re-check password')
     }
 
+    user.refreshToken = createRefreshJWT(user._id)
+    await user.save()
+
     sendUserInfo(res, user)
+})
+
+const refreshToken = catchAsync(async (req, res, next) => {
+    const { refreshToken } = req.body
+    if (!refreshToken) {
+        throw new BadRequestError("Please provide refreshtoken")
+    }
+
+    const user = await User.findOne({ refreshToken })
+    if (!user) {
+        throw new UnauthorizedError('Refreshtoken not exist')
+    }
+
+    jwt.verify(refreshToken, process.env.JWT_REFRESH_SECRET)
+
+    user.refreshToken = createRefreshJWT(user._id)
+    await user.save()
+    sendUserInfo(res, user)
+})
+
+const logout = catchAsync(async (req, res, next) => {
+    const id = req.user._id
+    const user = await User.findById(id)
+    if (!user) {
+        throw new NotFoundError("user not found")
+    }
+    user.refreshToken = null
+    await user.save()
+    res.status(StatusCodes.OK).send("Logout success")
 })
 
 const forgotPassword = catchAsync(async (req, res, next) => {
@@ -54,8 +87,8 @@ const forgotPassword = catchAsync(async (req, res, next) => {
     }
 
     const { resetToken, passwordResetToken, passwordResetExpires } = await createPasswordResetToken()
-    const resetUrl = `${req.protocol}://${req.get("host")}/api/v1/users/resetPassword/${resetToken}`
-    const message = `Foget your password? Submit a PATCH request with your new password and confirmPassword to: ${resetUrl} \n If didn't forget your password, please ignor this email`
+    const resetUrl = `${req.protocol}://${req.get("host")}/users/resetPassword/${resetToken}`
+    const message = `Foget your password? Submit a PATCH request with your new password to: ${resetUrl} \n If didn't forget your password, please ignor this email`
 
     user.passwordResetToken = passwordResetToken
     user.passwordResetExpires = passwordResetExpires
@@ -129,8 +162,9 @@ const sendUserInfo = (res, user) => {
             phone: user.phone,
             address: user.address
         },
-        token: createJWT(user._id)
+        token: createJWT(user._id),
+        refreshToken: user.refreshToken
     })
 }
 
-module.exports = { register, login, forgotPassword, resetPassword, changePassword }
+module.exports = { register, login, forgotPassword, resetPassword, changePassword, refreshToken, logout }

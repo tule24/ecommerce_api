@@ -32,6 +32,7 @@ const userSchema = new Schema({
         default: "user",
         enum: ["user", "vendor", "admin"]
     },
+    refreshToken: String,
     passwordChangedAt: Date,
     passwordResetToken: String,
     passwordResetExpires: Date

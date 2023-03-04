@@ -29,4 +29,10 @@ const createJWT = (userId) => jwt.sign(
     { expiresIn: process.env.JWT_LIFETIME }
 )
 
-module.exports = { checkPassword, createJWT, checkPasswordChange, createPasswordResetToken }
+const createRefreshJWT = (userId) => jwt.sign(
+    { userId },
+    process.env.JWT_REFRESH_SECRET,
+    { expiresIn: process.env.JWT_REFRESH_LIFETIME }
+)
+
+module.exports = { checkPassword, createJWT, checkPasswordChange, createPasswordResetToken, createRefreshJWT }
